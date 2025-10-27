@@ -19,6 +19,7 @@ import { renderModal } from '../../../partials';
 import { PODKOP_LUCI_APP_VERSION } from '../../../constants';
 import { showToast } from '../../../helpers/showToast';
 import { renderWikiDisclaimer } from './partials/renderWikiDisclaimer';
+import { runSectionsCheck } from './checks/runSectionsCheck';
 
 async function fetchSystemInfo() {
   const systemInfo = await PodkopShellMethods.getSystemInfo();
@@ -414,9 +415,9 @@ function renderDiagnosticSystemInfoWidget() {
   function getPodkopVersionRow(): IRenderSystemInfoRow {
     const loading = diagnosticsSystemInfo.loading;
     const unknown = diagnosticsSystemInfo.podkop_version === _('unknown');
-    const hasActualVersion = Boolean(
-      diagnosticsSystemInfo.podkop_latest_version,
-    );
+    const hasActualVersion =
+      Boolean(diagnosticsSystemInfo.podkop_latest_version) &&
+      diagnosticsSystemInfo.podkop_latest_version !== 'unknown';
     const version = normalizeCompiledVersion(
       diagnosticsSystemInfo.podkop_version,
     );
@@ -517,6 +518,8 @@ async function runChecks() {
     await runSingBoxCheck();
 
     await runNftCheck();
+
+    await runSectionsCheck();
 
     await runFakeIPCheck();
   } catch (e) {
