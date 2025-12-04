@@ -282,8 +282,6 @@ create_nft_rules() {
     log "Create nft table"
     nft_create_table "$NFT_TABLE_NAME"
 
-    nft_init_interfaces_set
-
     log "Create localv4 set"
     nft_create_ipv4_set "$NFT_TABLE_NAME" "$NFT_LOCALV4_SET_NAME"
     nft add element inet "$NFT_TABLE_NAME" localv4 '{
@@ -325,7 +323,7 @@ create_nft_rules() {
     nft add rule inet "$NFT_TABLE_NAME" mangle_output ip daddr "@$NFT_COMMON_SET_NAME" meta l4proto tcp meta mark set 0x105 counter
     nft add rule inet "$NFT_TABLE_NAME" mangle_output ip daddr "@$NFT_COMMON_SET_NAME" meta l4proto udp meta mark set 0x105 counter
     nft add rule inet "$NFT_TABLE_NAME" mangle_output ip daddr "$SB_FAKEIP_INET4_RANGE" meta l4proto tcp meta mark set 0x105 counter
-    nft add rule inet "$NFT_TABLE_NAME" mangle_output ip daddr "$SB_FAKEIP_INET4_RANGE" meta l4proto tcp meta mark set 0x105 counter
+    nft add rule inet "$NFT_TABLE_NAME" mangle_output ip daddr "$SB_FAKEIP_INET4_RANGE" meta l4proto udp meta mark set 0x105 counter
 
     local exclude_ntp
     config_get_bool exclude_ntp "settings" "exclude_ntp" "0"
@@ -1507,11 +1505,14 @@ section_has_enabled_lists() {
 get_service_listen_address() {
     local service_listen_address
 
-    service_listen_address="$(uci_get "network" "lan" "ipaddr")"
-
-    if [ -z "$service_listen_address" ]; then
-        config_get service_listen_address "settings" "service_listen_address" # TODO(ampetelin): Remove after testing
+    config_get service_listen_address "settings" "service_listen_address"
+    if [ -n "$service_listen_address" ]; then
+        log "Attention! The service_listen_address option is being used, overriding the automatic detection of the listening IP address!" "warn"
+        echo "$service_listen_address"
+        return 0
     fi
+
+    service_listen_address="$(uci_get "network" "lan" "ipaddr" | awk '{print $1}' | cut -d'/' -f1)"
 
     if [ -z "$service_listen_address" ]; then
         log "Failed to determine the listening IP address. Please open an issue to report this problem: https://github.com/itdoginfo/podkop/issues" "error"
