@@ -757,6 +757,30 @@ async function getDashboardSections() {
           ]
         };
       }
+      if (section.proxy_config_type === "selector") {
+        const selector = proxies.find(
+          (proxy) => proxy.code === `${section[".name"]}-out`
+        );
+        const links = section.selector_proxy_links ?? [];
+        const outbounds = links.map((link, index) => ({
+          link,
+          outbound: proxies.find(
+            (item) => item.code === `${section[".name"]}-${index + 1}-out`
+          )
+        })).map((item) => ({
+          code: item?.outbound?.code || "",
+          displayName: getProxyUrlName(item.link) || item?.outbound?.value?.name || "",
+          latency: item?.outbound?.value?.history?.[0]?.delay || 0,
+          type: item?.outbound?.value?.type || "",
+          selected: selector?.value?.now === item?.outbound?.code
+        }));
+        return {
+          withTagSelect: true,
+          code: selector?.code || section[".name"],
+          displayName: section[".name"],
+          outbounds
+        };
+      }
       if (section.proxy_config_type === "urltest") {
         const selector = proxies.find(
           (proxy) => proxy.code === `${section[".name"]}-out`
@@ -860,6 +884,7 @@ var ALLOWED_WITH_RUSSIA_INSIDE = [
   "hetzner",
   "ovh",
   "hodca",
+  "roblox",
   "digitalocean",
   "cloudfront"
 ];
@@ -883,6 +908,7 @@ var DOMAIN_LIST_OPTIONS = {
   google_ai: "Google AI",
   google_play: "Google Play",
   hodca: "H.O.D.C.A",
+  roblox: "Roblox",
   hetzner: "Hetzner ASN",
   ovh: "OVH ASN",
   digitalocean: "Digital Ocean ASN",
@@ -4138,7 +4164,10 @@ async function handleShowSingBoxConfig() {
     if (showSingBoxConfig.success) {
       ui.showModal(
         _("Show sing-box config"),
-        renderModal(showSingBoxConfig.data, "show_sing_box_config")
+        renderModal(
+          JSON.stringify(showSingBoxConfig.data, null, 2),
+          "show_sing_box_config"
+        )
       );
     } else {
       logger.error(

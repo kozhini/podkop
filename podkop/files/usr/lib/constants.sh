@@ -12,6 +12,7 @@ TMP_RULESET_FOLDER="$TMP_SING_BOX_FOLDER/rulesets"
 CLOUDFLARE_OCTETS="8.47 162.159 188.114" # Endpoints https://github.com/ampetelin/warp-endpoint-checker
 JQ_REQUIRED_VERSION="1.7.1"
 COREUTILS_BASE64_REQUIRED_VERSION="9.7"
+RT_TABLE_NAME="podkop"
 
 ## nft
 NFT_TABLE_NAME="PodkopTable"
@@ -19,6 +20,8 @@ NFT_LOCALV4_SET_NAME="localv4"
 NFT_COMMON_SET_NAME="podkop_subnets"
 NFT_DISCORD_SET_NAME="podkop_discord_subnets"
 NFT_INTERFACE_SET_NAME="interfaces"
+NFT_FAKEIP_MARK="0x00100000"
+NFT_OUTBOUND_MARK="0x00200000"
 
 ## sing-box
 SB_REQUIRED_VERSION="1.12.0"
@@ -43,23 +46,21 @@ SB_SERVICE_MIXED_INBOUND_PORT=4534
 SB_DIRECT_OUTBOUND_TAG="direct-out"
 # Route
 SB_REJECT_RULE_TAG="reject-rule-tag"
+SB_EXCLUSION_RULE_TAG="exclusion-rule-tag"
 # Experimental
 SB_CLASH_API_CONTROLLER_PORT=9090
 
 ## Lists
 GITHUB_RAW_URL="https://raw.githubusercontent.com/itdoginfo/allow-domains/main"
 SRS_MAIN_URL="https://github.com/itdoginfo/allow-domains/releases/latest/download"
-DOMAINS_RU_INSIDE="${GITHUB_RAW_URL}/Russia/inside-dnsmasq-nfset.lst"
-DOMAINS_RU_OUTSIDE="${GITHUB_RAW_URL}/Russia/outside-dnsmasq-nfset.lst"
-DOMAINS_UA="${GITHUB_RAW_URL}/Ukraine/inside-dnsmasq-nfset.lst"
-DOMAINS_YOUTUBE="${GITHUB_RAW_URL}/Services/youtube.lst"
 SUBNETS_TWITTER="${GITHUB_RAW_URL}/Subnets/IPv4/twitter.lst"
 SUBNETS_META="${GITHUB_RAW_URL}/Subnets/IPv4/meta.lst"
 SUBNETS_DISCORD="${GITHUB_RAW_URL}/Subnets/IPv4/discord.lst"
+SUBNETS_ROBLOX="${GITHUB_RAW_URL}/Subnets/IPv4/roblox.lst"
 SUBNETS_TELERAM="${GITHUB_RAW_URL}/Subnets/IPv4/telegram.lst"
 SUBNETS_CLOUDFLARE="${GITHUB_RAW_URL}/Subnets/IPv4/cloudflare.lst"
 SUBNETS_HETZNER="${GITHUB_RAW_URL}/Subnets/IPv4/hetzner.lst"
 SUBNETS_OVH="${GITHUB_RAW_URL}/Subnets/IPv4/ovh.lst"
 SUBNETS_DIGITALOCEAN="${GITHUB_RAW_URL}/Subnets/IPv4/digitalocean.lst"
 SUBNETS_CLOUDFRONT="${GITHUB_RAW_URL}/Subnets/IPv4/cloudfront.lst"
-COMMUNITY_SERVICES="russia_inside russia_outside ukraine_inside geoblock block porn news anime youtube hdrezka tiktok google_ai google_play hodca discord meta twitter cloudflare cloudfront digitalocean hetzner ovh telegram"
+COMMUNITY_SERVICES="russia_inside russia_outside ukraine_inside geoblock block porn news anime youtube hdrezka tiktok google_ai google_play hodca discord meta twitter cloudflare cloudfront digitalocean hetzner ovh telegram roblox"
